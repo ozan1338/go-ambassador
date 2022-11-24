@@ -1,26 +1,26 @@
 package main
 
-import (
-	"go-ambassador/src/database"
-	"go-ambassador/src/models"
+// import (
+// 	"go-ambassador/src/database"
+// 	"go-ambassador/src/models"
 
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
-)
+// 	"gorm.io/driver/mysql"
+// 	"gorm.io/gorm"
+// )
 
-func main() {
-	database.Connect()
-	db, err := gorm.Open(mysql.Open("root:root@tcp(host.docker.internal:33066)/ambassador"), &gorm.Config{})
+// func main() {
+// 	database.Connect()
+// 	db, err := gorm.Open(mysql.Open("root:root@tcp(host.docker.internal:33066)/ambassador"), &gorm.Config{})
 
-	if err != nil {
-		panic(err)
-	}
+// 	if err != nil {
+// 		panic(err)
+// 	}
 
-	var links []models.Link
+// 	var links []models.Link
 
-	db.Preload("Products").Find(&links)
+// 	db.Preload("Products").Find(&links)
 
-	for _, link := range links {
-		database.DB.Create(&link)
-	}
-}
+// 	for _, link := range links {
+// 		database.DB.Create(&link)
+// 	}
+// }

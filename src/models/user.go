@@ -11,7 +11,7 @@ type User struct {
 	Email        string   `json:"email" gorm:"unique"`
 	Password     []byte   `json:"-"`
 	IsAmbassador bool     `json:"is_ambassador"`
-	Revenue      *float64 `json:"revenue"`
+	Revenue      float64 `json:"revenue"`
 }
 
 func (user *User) Name() string {
@@ -33,5 +33,5 @@ func (ambassador *Ambassador) CalculateRevenue(db *gorm.DB) {
 		revenue += order.Total
 	}
 
-	ambassador.Revenue = &revenue
+	ambassador.Revenue = revenue
 }

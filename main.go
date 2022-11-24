@@ -2,6 +2,8 @@ package main
 
 import (
 	"go-ambassador/src/database"
+	"go-ambassador/src/routes"
+	"go-ambassador/src/services"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -12,7 +14,7 @@ func main() {
 	database.AutoMigrate()
 	database.SetupRedis()
 	database.SetupCacheChannel()
-	// services.Setup()
+	services.Setup()
 
 	app := fiber.New()
 
@@ -20,7 +22,7 @@ func main() {
 		AllowCredentials: true,
 	}))
 
-	// routes.Setup(app)
+	routes.Setup(app)
 
 	app.Listen(":8000")
 }
