@@ -2,6 +2,7 @@ package main
 
 import (
 	"go-ambassador/src/database"
+	"go-ambassador/src/events"
 	"go-ambassador/src/routes"
 	"go-ambassador/src/services"
 
@@ -15,6 +16,7 @@ func main() {
 	database.SetupRedis()
 	database.SetupCacheChannel()
 	services.Setup()
+	events.SetupProducer()
 
 	app := fiber.New()
 

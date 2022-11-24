@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"go-ambassador/src/database"
+	"go-ambassador/src/events"
 	"go-ambassador/src/models"
 
 	"github.com/bxcodec/faker/v3"
@@ -34,6 +35,7 @@ func CreateLink(c *fiber.Ctx) error {
 	}
 
 	database.DB.Create(&link)
+	events.Produce("admin_topic", link,"link_created")
 
 	return c.JSON(link)
 }
