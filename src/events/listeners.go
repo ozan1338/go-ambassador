@@ -8,42 +8,66 @@ import (
 	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
-func Listen(message *kafka.Message) {
+func Listen(message *kafka.Message) error {
 	key := string(message.Key)
 	
 	switch key {
 	case "product_created":
-		ProductCreated(message.Value)
+		return ProductCreated(message.Value)
 	case "product_updated":
-		ProductUpdated(message.Value)
+		return ProductUpdated(message.Value)
 	case "product_deleted":
-		ProductDeleted(message.Value)
+		return ProductDeleted(message.Value)
 	}
+
+	return nil
 }
 
-func ProductCreated(value []byte) {
+func ProductCreated(value []byte) error {
 	var product models.Product
 
-	json.Unmarshal(value, &product)
+	if err := json.Unmarshal(value, &product); err != nil {
+		return err
+	}
 
-	database.DB.Create(&product)
+	if err := database.DB.Create(&product).Error; err != nil {
+		return err
+	}
 	go database.ClearCache("products_frontend", "products_backend")
+
+	return nil
 }
 
-func ProductUpdated(value []byte) {
+func ProductUpdated(value []byte) error {
 	var product models.Product
 
-	json.Unmarshal(value, &product)
+	// json.Unmarshal(value, &product)
+	if err := json.Unmarshal(value, &product); err != nil {
+		return err
+	}
 
-	database.DB.Model(&product).Updates(&product)
+	
+	if err := database.DB.Model(&product).Updates(&product).Error; err != nil {
+		return err
+	}
 	go database.ClearCache("products_frontend", "products_backend")
+
+	return nil
 }
 
-func ProductDeleted(value []byte) {
+func ProductDeleted(value []byte) error {
 	var id uint
 
-	json.Unmarshal(value, &id)
+	// json.Unmarshal(value, &id)
+	if err := json.Unmarshal(value, &id); err != nil {
+		return err
+	}
 
-	database.DB.Delete(&models.Product{}, "id = ?", id)
+	if err := database.DB.Delete(&models.Product{}, "id = ?", id).Error; err != nil {
+		return err
+	}
+	
 	go database.ClearCache("products_frontend", "products_backend")
+
+	return nil
 }
