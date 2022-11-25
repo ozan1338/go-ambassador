@@ -21,7 +21,7 @@ func SetupProducer() {
 		panic(err)
 	}
 
-	defer Producer.Close()
+	// defer Producer.Close()
 }
 
 

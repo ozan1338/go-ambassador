@@ -2,6 +2,7 @@ version: '3.9'
 services:
   ambassador_backend:
     build: .
+    command: ["air"]
     ports:
       - 8003:8000
     volumes:
@@ -12,6 +13,15 @@ services:
     networks:
       - ambassador
       - users
+  
+  ambassador_queue:
+    build: .
+    command: "go run src/cmd/consumer.go"
+    depends_on:
+      - ambassador_db
+      - ambassador_backend
+    networks:
+      - ambassador
 
   ambassador_db:
     image: mysql:latest
