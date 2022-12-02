@@ -3,8 +3,10 @@ package database
 import (
 	"context"
 	"fmt"
-	"github.com/go-redis/redis/v8"
+	"os"
 	"time"
+
+	"github.com/go-redis/redis/v8"
 )
 
 var Cache *redis.Client
@@ -12,7 +14,7 @@ var CacheChannel chan string
 
 func SetupRedis() {
 	Cache = redis.NewClient(&redis.Options{
-		Addr: "redis:6379",
+		Addr: os.Getenv("REDIS_CONNECTION"),
 		DB:   0,
 	})
 }

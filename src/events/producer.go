@@ -2,8 +2,25 @@ package events
 
 import (
 	"encoding/json"
+	"os"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+)
+
+const (
+	BOOTSRAP_SERVER = "BOOTSTRAP_SERVERS"
+	SERCURITY_PROTOCOL = "SECURITY_PROTOCOL"
+	SASL_USERNAME = "SASL_USERNAME"
+	SASL_PASSWORD = "SASL_PASSWORD"
+	SASL_MECHANISM = "SASL_MECHANISM"
+)
+
+var (
+	bootstrap_server = os.Getenv(BOOTSRAP_SERVER)
+	security_protocol = os.Getenv(SERCURITY_PROTOCOL)
+	sasl_username = os.Getenv(SASL_USERNAME)
+	sasl_password = os.Getenv(SASL_PASSWORD)
+	sasl_mechanism = os.Getenv(SASL_MECHANISM)
 )
 
 var Producer *kafka.Producer
@@ -11,11 +28,11 @@ var Producer *kafka.Producer
 func SetupProducer() {
 	var err error
 	Producer, err = kafka.NewProducer(&kafka.ConfigMap{
-		"bootstrap.servers": "pkc-ew3qg.asia-southeast2.gcp.confluent.cloud:9092",
-		"security.protocol": "SASL_SSL",
-		"sasl.username": "ZRITSDHTM4YORCX3",
-		"sasl.password": "iOJVSZ5sHVRnmunF7VvCw+lC1iADXyNZGeYuVlZZfUlvcvUn4fotwbsxRoW2WY2W",
-		"sasl.mechanism": "PLAIN",
+		"bootstrap.servers": bootstrap_server,
+		"security.protocol": security_protocol,
+		"sasl.username": sasl_username,
+		"sasl.password": sasl_password,
+		"sasl.mechanism": sasl_mechanism,
 	})
 	if err != nil {
 		panic(err)

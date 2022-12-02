@@ -36,6 +36,7 @@ func CreateLink(c *fiber.Ctx) error {
 
 	database.DB.Create(&link)
 	go events.Produce("admin_topic", link,"link_created")
+	go events.Produce("checkout_topic", link,"link_created")
 
 	return c.JSON(link)
 }

@@ -1,6 +1,7 @@
 package events
 
 import (
+	"context"
 	"encoding/json"
 	"go-ambassador/src/database"
 	"go-ambassador/src/models"
@@ -18,6 +19,8 @@ func Listen(message *kafka.Message) error {
 		return ProductUpdated(message.Value)
 	case "product_deleted":
 		return ProductDeleted(message.Value)
+	case "order_created":
+		return OrderCreated(message.Value)
 	}
 
 	return nil
@@ -68,6 +71,36 @@ func ProductDeleted(value []byte) error {
 	}
 	
 	go database.ClearCache("products_frontend", "products_backend")
+
+	return nil
+}
+
+type Order struct {
+	Id uint `json:"id"`
+	UserId          uint        `json:"user_id"`
+	Code            string      `json:"code"`
+	AmbassadorRevenue float64 `json:"ambassador_revenue"`
+	AmbassadorName string `json:"ambassador_name"`
+}
+
+
+func OrderCreated(value []byte) error {
+	var order Order
+
+	if err := json.Unmarshal(value, &order); err != nil {
+		return err
+	}
+
+	if err := database.DB.Create(&models.Order{
+		Id: order.Id,
+		UserId: order.UserId,
+		Code: order.Code,
+		Total: order.AmbassadorRevenue,
+	}).Error; err != nil {
+		return err
+	}
+	
+	database.Cache.ZIncrBy(context.Background(), "rankings",  order.AmbassadorRevenue, order.AmbassadorName)
 
 	return nil
 }
